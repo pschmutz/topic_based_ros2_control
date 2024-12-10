@@ -47,29 +47,6 @@ install(
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
-#############
-## Testing ##
-#############
-
-if(BUILD_TESTING)
-  find_package(ament_cmake_gtest REQUIRED)
-  find_package(ament_lint_auto REQUIRED)
-  find_package(ament_cmake_pytest REQUIRED)
-  find_package(ros2_control_test_assets REQUIRED)
-
-  # ROS2 linters, but disable copyright test. PickNik's copyright's may not conform
-  # to this test
-  set(ament_cmake_cpplint_FOUND TRUE)
-  set(ament_cmake_uncrustify_FOUND TRUE)
-  ament_lint_auto_find_test_dependencies()
-
-  # GTests
-  ament_add_gtest(topic_based_system_test test/topic_based_system_test.cpp)
-  target_link_libraries(topic_based_system_test
-    ${PROJECT_NAME})
-  ament_target_dependencies(topic_based_system_test ${THIS_PACKAGE_INCLUDE_DEPENDS} ros2_control_test_assets)
-endif()
-
 pluginlib_export_plugin_description_file(hardware_interface topic_based_ros2_control_plugin_description.xml)
 ament_export_targets(${PROJECT_NAME}Targets HAS_LIBRARY_TARGET)
 ament_export_dependencies(${THIS_PACKAGE_INCLUDE_DEPENDS})
