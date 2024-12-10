@@ -157,6 +157,8 @@ CallbackReturn TopicBasedSystem::on_init(const hardware_interface::HardwareInfo&
     sum_wrapped_joint_states_ = true;
   }
 
+  joint_name_prefix_ = get_hardware_parameter("joint_name_prefix", "");
+
   return CallbackReturn::SUCCESS;
 }
 
@@ -212,8 +214,8 @@ hardware_interface::return_type TopicBasedSystem::read(const rclcpp::Time& /*tim
   {
     const auto& joints = info_.joints;
     auto it = std::find_if(joints.begin(), joints.end(),
-                           [&joint_name = std::as_const(latest_joint_state_.name[i])](
-                               const hardware_interface::ComponentInfo& info) { return joint_name == info.name; });
+                           [&joint_name = std::as_const(latest_joint_state_.name[i]), this](
+                               const hardware_interface::ComponentInfo& info) { return (joint_name_prefix_ + joint_name) == info.name; });
     if (it != joints.end())
     {
       auto j = static_cast<std::size_t>(std::distance(joints.begin(), it));
